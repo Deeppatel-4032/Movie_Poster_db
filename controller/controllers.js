@@ -45,37 +45,33 @@ const editMovie = async (req, res) => {
 const updateMovie = async (req, res) => {
 
     const {id} = req.params;
+    const update = await Movie_model.findById(id)
+    console.log("update",update);
+    
+    if(req.path){
+        fs.unlink(update.path , (err)=>{
+            console.log(err);
+        })
+        console.log("delete privuse path...");
+        
+    }
+    update.title = req.body.title,
+    update.description = req.body.description,
+    update.releaseDate = req.body.releaseDate,
+    update.rating = req.body.rating,
+    update.genre = req.body.genre
 
-    const newUpdateMovie = await Movie_model.findByIdAndUpdate(
-        {
-            _id : id
-        },{
-            title : req.body.title,
-            description : req.body.description,
-            path : req.file.path,
-            releaseDate : req.body.releaseDate,
-            rating : req.body.rating,
-            genre : req.body.genre
-        },{
-            new : true
-    });
+    if(req.file){
+        update.path = req.file.path
+    }
+
+
+
+
+    const newUpdateMovie = await Movie_model.findByIdAndUpdate(id , update , {new : true})
 
     console.log("newUpdateMovie", newUpdateMovie);
 
-
-
-    if(req.file) {
-
-        fs.unlink(newUpdateMovie.path, (err) => {
-            if(!err) {
-                console.log("file is deleted");
-            }
-        });
-
-        newUpdateMovie.path = req.file.path;
-    }
-    
-    // await newUpdateMovie.remove();
 
     res.redirect("/");
 }
