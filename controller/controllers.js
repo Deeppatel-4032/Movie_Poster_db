@@ -45,15 +45,15 @@ const editMovie = async (req, res) => {
 const updateMovie = async (req, res) => {
 
     const {id} = req.params;
-    const update = await Movie_model.findById(id)
+    const update = await Movie_model.findById(id);
     console.log("update",update);
     
     if(req.path){
         fs.unlink(update.path , (err)=>{
             console.log(err);
         })
-        console.log("delete privuse path...");
-        
+        console.log("Delete previous path...!");
+         
     }
     update.title = req.body.title,
     update.description = req.body.description,
@@ -65,10 +65,7 @@ const updateMovie = async (req, res) => {
         update.path = req.file.path
     }
 
-
-
-
-    const newUpdateMovie = await Movie_model.findByIdAndUpdate(id , update , {new : true})
+    const newUpdateMovie = await Movie_model.findByIdAndUpdate({_id : id} , update , {new : true})
 
     console.log("newUpdateMovie", newUpdateMovie);
 
